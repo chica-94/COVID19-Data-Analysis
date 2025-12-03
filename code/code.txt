@@ -1,0 +1,91 @@
+Apache Hadoop Big Data cluster is created by the user which is composed of 3 nodes
+(Linux servers)
+
+## Connect to linux server
+ssh username@ip
+
+## COVID data loaded into Oracle Big Data
+wget -O https://github.com/chica-94/COVID19-Data-Analysis/raw/refs/heads/main/covid19_tables.zip
+ls -lha covid19_tables.zip
+
+
+unzip covid19_tables.zip
+ls -lha covid19_tables
+cd covid19_tables
+
+## Upload file to HDFS
+hdfs dfs -mkdir tmp/group3_covid19/index
+hdfs dfs -mkdir tmp/group3_covid19/hospitalizations
+hdfs dfs -mkdir tmp/group3_covid19/health
+hdfs dfs -mkdir tmp/group3_covid19/vaccinations
+hdfs dfs -mkdir tmp/group3_covid19/demographics
+hdfs dfs -mkdir tmp/group3_covid19/geography
+hdfs dfs -mkdir tmp/group3_covid19/gender
+hdfs dfs -mkdir tmp/group3_covid19/epidemiology
+hdfs dfs -mkdir tmp/group3_covid19/age
+hdfs dfs -mkdir tmp/group3_covid19/gender
+
+hdfs dfs -ld tmp/group3_covid19/
+
+hdfs dfs -put index.csv tmp/group3_covid19/index
+hdfs dfs -put hospitalizations.csv tmp/group3_covid19/hospitalizations
+hdfs dfs -put health.csv tmp/group3_covid19/health
+hdfs dfs -put vaccinations.csv tmp/group3_covid19/vaccinations
+hdfs dfs -put demographics.csv tmp/group3_covid19/demographics
+hdfs dfs -put geography.csv tmp/group3_covid19/geography
+hdfs dfs -put gender.csv tmp/group3_covid19/gender
+hdfs dfs -put epidemiology.csv tmp/group3_covid19/epidemiology
+hdfs dfs -put age.csv tmp/group3_covid19/age
+hdfs dfs -put gender.csv tmp/group3_covid19/gender
+
+
+	
+## Verify file is uploaded to covid19 directory (table): 
+hdfs dfs –ls
+hdfs dfs -ls covid19
+
+
+-----------------------------------------------------
+------------------ beeline connect ------------------
+-----------------------------------------------------
+beeline
+use bchica;
+
+
+-- At Beeline to use your Database
+use [your_accountname];
+
+
+-- HiveQL in beeline
+	
+	
+
+	
+	
+## Test SQL queries to check if data works
+Select * from covid19_raw limit 10;
+SELECT DISTINCT country FROM covid19_raw;
+
+	  
+	  
+## Export Cleaned Table to HDFS
+
+
+
+## Create Final CSV with Header remove any potential duplicates before
+	rm -r 
+	hdfs dfs -get 
+
+
+
+## Download Final CSV to Local Machine
+
+
+
+## From your local terminal (not SSH)
+	scp username@ip:/home/bchica/ ~/Downloads/
+	
+	
+	
+	
+
