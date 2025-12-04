@@ -1,0 +1,45 @@
+-- connect to linux server
+ssh username@ip
+
+-- covid19 tables data loaded into oracle big data server
+wget https://github.com/chica-94/COVID19-Data-Analysis/raw/refs/heads/main/covid19_tables.zip
+ls -lha covid19_tables.zip
+
+
+-- extract zipped folder
+unzip covid19_tables.zip
+ls -lha covid19_tables
+cd covid19_tables
+
+-- created directories in hdfs
+hdfs dfs -mkdir /tmp/group3_covid19/
+hdfs dfs -mkdir /tmp/group3_covid19/index
+hdfs dfs -mkdir /tmp/group3_covid19/hospitalizations
+hdfs dfs -mkdir /tmp/group3_covid19/health
+hdfs dfs -mkdir /tmp/group3_covid19/vaccinations
+hdfs dfs -mkdir /tmp/group3_covid19/demographics
+hdfs dfs -mkdir /tmp/group3_covid19/geography
+hdfs dfs -mkdir /tmp/group3_covid19/gender
+hdfs dfs -mkdir /tmp/group3_covid19/epidemiology
+hdfs dfs -mkdir /tmp/group3_covid19/age
+hdfs dfs -mkdir /tmp/group3_covid19/agggregated
+hdfs dfs -mkdir /tmp/group3_covid19/top10_countries/
+
+-- list tables
+hdfs dfs -ls tmp/group3_covid19/
+
+
+-- add the project dataset files into the their respective directories
+hdfs dfs -put index.csv /tmp/group3_covid19/index
+hdfs dfs -put hospitalizations.csv /tmp/group3_covid19/hospitalizations
+hdfs dfs -put health.csv /tmp/group3_covid19/health
+hdfs dfs -put vaccinations.csv /tmp/group3_covid19/vaccinations
+hdfs dfs -put demographics.csv /tmp/group3_covid19/demographics
+hdfs dfs -put geography.csv /tmp/group3_covid19/geography
+hdfs dfs -put gender.csv /tmp/group3_covid19/gender
+hdfs dfs -put epidemiology.csv /tmp/group3_covid19/epidemiology
+hdfs dfs -put age.csv /tmp/group3_covid19/age
+
+
+-- ensure that all files loaded to hdfs and are in their designated directories
+hdfs dfs -ls -R tmp/group3_covid19/

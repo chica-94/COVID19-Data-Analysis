@@ -1,0 +1,9 @@
+
+
+-- Create Final CSV
+hdfs dfs -ls /tmp/group3_covid19/top10_countries/
+hdfs dfs -getmerge /tmp/group3_covid19/top10_countries/0000* covid19_top10_countries.csv
+
+
+-- Download Final CSV to Local Machine
+scp bchica@161.153.21.139:/home/bchica/covid19_tables/covid19_top10_countries.csv ~/Downloads/

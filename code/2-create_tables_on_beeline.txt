@@ -1,0 +1,209 @@
+-- enter hive
+beeline
+
+-- create a database for the project by executing the following HiveQL command:
+use [database_name];
+
+-- create the index table on comma-separated covid19 data
+DROP TABLE IF EXISTS covid19_index;
+
+CREATE EXTERNAL TABLE IF NOT EXISTS covid19_index(
+	location_key STRING,
+	country_code STRING,
+	country_name STRING,
+	subregion1_name STRING,
+	subregion2_name STRING)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+STORED AS TEXTFILE LOCATION '/tmp/group3_covid19/index/'
+TBLPROPERTIES ("skip.header.line.count"="1");
+
+
+SELECT * FROM covid19_index LIMIT 10;
+
+
+-- create the hospitalizations table on comma-separated covid19 data
+DROP TABLE IF EXISTS covid19_hospitalizations;
+
+CREATE EXTERNAL TABLE IF NOT EXISTS covid19_hospitalizations(
+	event_date DATE,
+	location_key STRING,
+	new_hospitalized_patients INT,
+    cumulative_hospitalized_patients INT,
+    new_intensive_care_patients INT,
+    cumulative_intensive_care_patients INT)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+STORED AS TEXTFILE LOCATION '/tmp/group3_covid19/hospitalizations/'
+TBLPROPERTIES ("skip.header.line.count"="1");
+
+
+SELECT * FROM covid19_hospitalizations LIMIT 10;
+
+
+-- create the health table on comma-separated covid19 data
+DROP TABLE IF EXISTS covid19_health;
+
+CREATE EXTERNAL TABLE IF NOT EXISTS covid19_health(
+	location_key STRING,
+    adult_male_mortality_rate DOUBLE,
+    adult_female_mortality_rate DOUBLE,
+	life_expectancy DOUBLE,
+	diabetes_prevalence DOUBLE,
+    health_expenditure_usd DOUBLE,
+    out_of_pocket_health_expenditure_usd DOUBLE)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+STORED AS TEXTFILE LOCATION '/tmp/group3_covid19/health/'
+TBLPROPERTIES ("skip.header.line.count"="1");
+
+
+SELECT * FROM covid19_health LIMIT 10;
+
+
+
+-- create the vaccinations table on comma-separated covid19 data
+DROP TABLE IF EXISTS covid19_vaccinations;
+
+CREATE EXTERNAL TABLE IF NOT EXISTS covid19_vaccinations(
+	event_date DATE,
+	location_key STRING,
+	new_persons_fully_vaccinated INT,
+    cumulative_persons_fully_vaccinated INT
+ )
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+STORED AS TEXTFILE LOCATION '/tmp/group3_covid19/vaccinations/'
+TBLPROPERTIES ("skip.header.line.count"="1");
+
+
+SELECT * FROM covid19_vaccinations LIMIT 10;
+
+
+
+-- create the demographics table on comma-separated covid19 data
+DROP TABLE IF EXISTS covid19_demographics;
+
+CREATE EXTERNAL TABLE IF NOT EXISTS covid19_demographics(
+	location_key STRING,
+	population INT,
+    population_male INT,
+    population_female INT,
+    population_age_00_09 INT,
+    population_age_10_19 INT,
+    population_age_20_29 INT,
+    population_age_30_39 INT,
+    population_age_40_49 INT,
+    population_age_50_59 INT,
+    population_age_60_69 INT,
+    population_age_70_79 INT,
+	population_age_80_and_older INT
+ )
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+STORED AS TEXTFILE LOCATION '/tmp/group3_covid19/demographics/'
+TBLPROPERTIES ("skip.header.line.count"="1");
+
+
+SELECT * FROM covid19_demographics LIMIT 10;
+
+
+
+
+-- create the geography table on comma-separated covid19 data
+DROP TABLE IF EXISTS covid19_geography;
+
+CREATE EXTERNAL TABLE IF NOT EXISTS covid19_geography(
+	location_key STRING,
+	latitude DOUBLE,
+    longitude DOUBLE
+ )
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+STORED AS TEXTFILE LOCATION '/tmp/group3_covid19/geography/'
+TBLPROPERTIES ("skip.header.line.count"="1");
+
+
+SELECT * FROM covid19_geography LIMIT 10;
+
+
+ 
+-- create the gender table on comma-separated covid19 data
+DROP TABLE IF EXISTS covid19_gender;
+
+CREATE EXTERNAL TABLE IF NOT EXISTS covid19_gender(
+	`date1 DATE,
+	location_key STRING,
+	new_deceased_male INT,
+	cumulative_deceased_male INT,
+    new_deceased_female INT,
+	cumulative_deceased_female INT,
+	new_recovered_male INT,
+	cumulative_recovered_male INT,
+    new_recovered_female INT,
+	cumulative_recovered_female INT
+ )
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+STORED AS TEXTFILE LOCATION '/tmp/group3_covid19/gender/'
+TBLPROPERTIES ("skip.header.line.count"="1");
+
+
+SELECT * FROM covid19_gender LIMIT 10;
+
+
+
+
+-- create the epidemiology table on comma-separated covid19 data
+DROP TABLE IF EXISTS covid19_epidemiology;
+
+CREATE EXTERNAL TABLE IF NOT EXISTS covid19_epidemiology(
+	`date1 DATE,
+	location_key STRING,
+	new_confirmed INT,
+    cumulative_confirmed INT,
+    new_deceased INT,
+    cumulative_deceased INT,
+	new_recovered INT,
+	cumulative_recovered INT
+ )
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+STORED AS TEXTFILE LOCATION '/tmp/group3_covid19/epidemiology/'
+TBLPROPERTIES ("skip.header.line.count"="1");
+
+
+SELECT * FROM covid19_epidemiology LIMIT 10;
+
+
+-- create the age table on comma-separated covid19 data
+DROP TABLE IF EXISTS covid19_age;
+
+CREATE EXTERNAL TABLE IF NOT EXISTS covid19_age(
+	event_date DATE,
+	location_key STRING,
+    new_recovered_age_0-9 INT,
+    new_recovered_age_10-19 INT,
+    new_recovered_age_20-29 INT,
+    new_recovered_age_30-39 INT,
+    new_recovered_age_40-49 INT,
+    new_recovered_age_50-59 INT,
+    new_recovered_age_60-69 INT,
+    new_recovered_age_70-79 INT,
+    new_recovered_age_80-89 INT,
+    new_recovered_age_90-99 INT,
+    cumulative_recovered_age_0-9 INT,
+    cumulative_recovered_age_10-19 INT,
+    cumulative_recovered_age_20-29 INT,
+    cumulative_recovered_age_30-39 INT,
+    cumulative_recovered_age_40-49 INT,
+    cumulative_recovered_age_50-59 INT,
+    cumulative_recovered_age_60-69 INT,
+    cumulative_recovered_age_70-79 INT,
+    cumulative_recovered_age_80-89 INT,
+    cumulative_recovered_age_90-99 INT
+ )
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+STORED AS TEXTFILE LOCATION '/tmp/group3_covid19/age/'
+TBLPROPERTIES ("skip.header.line.count"="1");
+
+
+SELECT * FROM covid19_age LIMIT 10;
+
+
+-- check if the table "covid19" tables are shown
+show tables;
+
+

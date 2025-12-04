@@ -1,0 +1,181 @@
+
+-- Create the final aggregated table
+DROP TABLE IF EXISTS covid19_aggregated;
+
+CREATE EXTERNAL TABLE IF NOT EXISTS covid19_aggregated(
+	event_date DATE,
+	location_key STRING,
+	country_code STRING,
+	country_name STRING,
+	subregion1_name STRING,
+	subregion2_name STRING,
+	new_confirmed INT,
+	cumulative_confirmed INT,
+	new_deceased INT,
+	cumulative_deceased INT,
+	new_recovered INT,
+	cumulative_recovered INT,
+	new_hospitalized_patients INT,
+	cumulative_hospitalized_patients INT,
+	new_intensive_care_patients INT,
+	cumulative_intensive_care_patients INT,
+	new_persons_fully_vaccinated INT,
+	cumulative_persons_fully_vaccinated INT,
+	adult_male_mortality_rate DOUBLE,
+	adult_female_mortality_rate DOUBLE,
+	life_expectancy DOUBLE,
+	diabetes_prevalence DOUBLE,
+	health_expenditure_usd DOUBLE,
+	out_of_pocket_health_expenditure_usd DOUBLE,
+	population INT,
+    population_male INT,
+    population_female INT,
+    population_age_00_09 INT,
+    population_age_10_19 INT,
+    population_age_20_29 INT,
+    population_age_30_39 INT,
+    population_age_40_49 INT,
+    population_age_50_59 INT,
+    population_age_60_69 INT,
+    population_age_70_79 INT,
+	population_age_80_and_older INT
+	latitude DOUBLE,
+	longitude DOUBLE,
+	new_deceased_male INT,
+	cumulative_deceased_male INT,
+    new_deceased_female INT,
+	cumulative_deceased_female INT,
+	new_recovered_male INT,
+	cumulative_recovered_male INT,
+    new_recovered_female INT,
+	cumulative_recovered_female INT
+    new_recovered_age_0-9 INT,
+    new_recovered_age_10-19 INT,
+    new_recovered_age_20-29 INT,
+    new_recovered_age_30-39 INT,
+    new_recovered_age_40-49 INT,
+    new_recovered_age_50-59 INT,
+    new_recovered_age_60-69 INT,
+    new_recovered_age_70-79 INT,
+    new_recovered_age_80-89 INT,
+    new_recovered_age_90-99 INT,
+    cumulative_recovered_age_0-9 INT,
+    cumulative_recovered_age_10-19 INT,
+    cumulative_recovered_age_20-29 INT,
+    cumulative_recovered_age_30-39 INT,
+    cumulative_recovered_age_40-49 INT,
+    cumulative_recovered_age_50-59 INT,
+    cumulative_recovered_age_60-69 INT,
+    cumulative_recovered_age_70-79 INT,
+    cumulative_recovered_age_80-89 INT,
+    cumulative_recovered_age_90-99 INT)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+STORED AS TEXTFILE
+LOCATION '/tmp/group3_covid19/aggregated';
+
+
+
+-- Insert Into the Combined Table Using Joins
+INSERT OVERWRITE TABLE covid19_aggregated
+SELECT
+    epi.event_date,
+    epi.location_key,
+    idx.country_code,
+    idx.country_name,
+    idx.subregion1_name,
+    idx.subregion2_name,
+
+    epi.new_confirmed,
+    epi.cumulative_confirmed,
+    epi.new_deceased,
+    epi.cumulative_deceased,
+    epi.new_recovered,
+    epi.cumulative_recovered,
+
+    hosp.new_hospitalized_patients,
+    hosp.cumulative_hospitalized_patients,
+    hosp.new_intensive_care_patients,
+    hosp.cumulative_intensive_care_patients,
+
+    vac.new_persons_fully_vaccinated,
+    vac.cumulative_persons_fully_vaccinated,
+
+    health.adult_male_mortality_rate,
+    health.adult_female_mortality_rate,
+    health.life_expectancy,
+    health.diabetes_prevalence,
+    health.health_expenditure_usd,
+    health.out_of_pocket_health_expenditure_usd,
+
+    demo.population,
+    demo.population_male,
+    demo.population_female,
+    demo.population_age_00_09,
+    demo.population_age_10_19,
+    demo.population_age_20_29,
+    demo.population_age_30_39,
+    demo.population_age_40_49,
+    demo.population_age_50_59,
+    demo.population_age_60_69,
+    demo.population_age_70_79,
+    demo.population_age_80_and_older,
+
+    geo.latitude,
+    geo.longitude,
+
+    gender.new_deceased_male,
+    gender.cumulative_deceased_male,
+    gender.new_deceased_female,
+    gender.cumulative_deceased_female,
+    gender.new_recovered_male,
+    gender.cumulative_recovered_male,
+    gender.new_recovered_female,
+    gender.cumulative_recovered_female,
+
+    age.new_recovered_age_0_9,
+    age.new_recovered_age_10_19,
+    age.new_recovered_age_20_29,
+    age.new_recovered_age_30_39,
+    age.new_recovered_age_40_49,
+    age.new_recovered_age_50_59,
+    age.new_recovered_age_60_69,
+    age.new_recovered_age_70_79,
+    age.new_recovered_age_80_89,
+    age.new_recovered_age_90_99,
+
+    age.cumulative_recovered_age_0_9,
+    age.cumulative_recovered_age_10_19,
+    age.cumulative_recovered_age_20_29,
+    age.cumulative_recovered_age_30_39,
+    age.cumulative_recovered_age_40_49,
+    age.cumulative_recovered_age_50_59,
+    age.cumulative_recovered_age_60_69,
+    age.cumulative_recovered_age_70_79,
+    age.cumulative_recovered_age_80_89,
+    age.cumulative_recovered_age_90_99
+FROM covid19_epidemiology epi
+LEFT JOIN covid19_index idx 
+	ON epi.location_key = idx.location_key
+LEFT JOIN covid19_hospitalizations hosp 
+	ON epi.location_key = hosp.location_key 
+	AND epi.event_date = hosp.event_date
+LEFT JOIN covid19_vaccinations vac
+	ON epi.location_key = vac.location_key 
+	AND epi.event_date = vac.event_date
+LEFT JOIN covid19_health health 
+	ON epi.location_key = health.location_key
+LEFT JOIN covid19_demographics demo 
+	ON epi.location_key = demo.location_key
+LEFT JOIN covid19_geography geo 
+	ON epi.location_key = geo.location_key
+LEFT JOIN covid19_gender gender 
+	ON epi.location_key = gender.location_key 
+	AND epi.event_date = gender.event_date
+LEFT JOIN covid19_age age 
+	ON epi.location_key = age.location_key 
+	AND epi.event_date = age.event_date;
+
+
+
+-- check if the table "covid19" tables are shown
+show tables;

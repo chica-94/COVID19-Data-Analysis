@@ -1,0 +1,154 @@
+-- find the Top 10 Countries
+SELECT country_name,MAX(cumulative_confirmed) AS total_cases 
+FROM covid19_aggregated 
+WHERE cumulative_confirmed IS NOT NULL 
+GROUP BY country_name 
+ORDER BY total_cases DESC 
+LIMIT 10
+
+-- 
+DROP TABLE IF EXISTS covid19_top10_countries;
+
+CREATE EXTERNAL TABLE IF NOT EXISTS covid19_top10_countries (
+    location_key STRING,
+    country_code STRING,
+    country_name STRING,
+    subregion1_name STRING,
+    subregion2_name STRING,
+
+    cumulative_confirmed INT,
+    cumulative_deceased INT,
+    cumulative_recovered INT,
+
+    cumulative_hospitalized_patients INT,
+    cumulative_intensive_care_patients INT,
+
+    cumulative_persons_fully_vaccinated INT,
+
+    adult_male_mortality_rate DOUBLE,
+    adult_female_mortality_rate DOUBLE,
+    life_expectancy DOUBLE,
+    diabetes_prevalence DOUBLE,
+    health_expenditure_usd DOUBLE,
+    out_of_pocket_health_expenditure_usd DOUBLE,
+
+    population INT,
+    population_male INT,
+    population_female INT,
+    population_age_00_09 INT,
+    population_age_10_19 INT,
+    population_age_20_29 INT,
+    population_age_30_39 INT,
+    population_age_40_49 INT,
+    population_age_50_59 INT,
+    population_age_60_69 INT,
+    population_age_70_79 INT,
+    population_age_80_and_older INT,
+
+    latitude DOUBLE,
+    longitude DOUBLE,
+
+    cumulative_deceased_male INT,
+    cumulative_deceased_female INT,
+    cumulative_recovered_male INT,
+    cumulative_recovered_female INT,
+
+
+    cumulative_recovered_age_0_9 INT,
+    cumulative_recovered_age_10_19 INT,
+    cumulative_recovered_age_20_29 INT,
+    cumulative_recovered_age_30_39 INT,
+    cumulative_recovered_age_40_49 INT,
+    cumulative_recovered_age_50_59 INT,
+    cumulative_recovered_age_60_69 INT,
+    cumulative_recovered_age_70_79 INT,
+    cumulative_recovered_age_80_89 INT,
+    cumulative_recovered_age_90_99 INT
+)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+STORED AS TEXTFILE
+LOCATION '/tmp/group3_covid19/top10_countries/';
+
+
+
+-- Insert Data (All Columns, Only Top 10 Countries)
+WITH top10 AS (
+    SELECT 
+        country_name,
+        MAX(cumulative_confirmed) AS total_cases
+    FROM covid19_aggregated
+    WHERE cumulative_confirmed IS NOT NULL
+    GROUP BY country_name
+    ORDER BY total_cases DESC
+    LIMIT 10
+)
+
+INSERT OVERWRITE TABLE covid19_top10_countries
+SELECT
+    a.location_key,
+    a.country_code,
+    a.country_name,
+    a.subregion1_name,
+    a.subregion2_name,
+
+    MAX(a.cumulative_confirmed) AS cumulative_confirmed,
+    MAX(a.cumulative_deceased) AS cumulative_deceased,
+    MAX(a.cumulative_recovered) AS cumulative_recovered,
+
+    MAX(a.cumulative_hospitalized_patients) AS cumulative_hospitalized_patients,
+    MAX(a.cumulative_intensive_care_patients) AS cumulative_intensive_care_patients,
+
+    MAX(a.cumulative_persons_fully_vaccinated) AS cumulative_persons_fully_vaccinated,
+
+    MAX(a.adult_male_mortality_rate),
+    MAX(a.adult_female_mortality_rate),
+    MAX(a.life_expectancy),
+    MAX(a.diabetes_prevalence),
+    MAX(a.health_expenditure_usd),
+    MAX(a.out_of_pocket_health_expenditure_usd),
+
+    MAX(a.population),
+    MAX(a.population_male),
+    MAX(a.population_female),
+    MAX(a.population_age_00_09),
+    MAX(a.population_age_10_19),
+    MAX(a.population_age_20_29),
+    MAX(a.population_age_30_39),
+    MAX(a.population_age_40_49),
+    MAX(a.population_age_50_59),
+    MAX(a.population_age_60_69),
+    MAX(a.population_age_70_79),
+    MAX(a.population_age_80_and_older),
+
+    a.latitude,
+    a.longitude,
+
+    MAX(a.cumulative_deceased_male),
+    MAX(a.cumulative_deceased_female),
+    MAX(a.cumulative_recovered_male),
+    MAX(a.cumulative_recovered_female),
+
+    MAX(a.cumulative_recovered_age_0_9),
+    MAX(a.cumulative_recovered_age_10_19),
+    MAX(a.cumulative_recovered_age_20_29),
+    MAX(a.cumulative_recovered_age_30_39),
+    MAX(a.cumulative_recovered_age_40_49),
+    MAX(a.cumulative_recovered_age_50_59),
+    MAX(a.cumulative_recovered_age_60_69),
+    MAX(a.cumulative_recovered_age_70_79),
+    MAX(a.cumulative_recovered_age_80_89),
+    MAX(a.cumulative_recovered_age_90_99)
+
+FROM covid19_aggregated a
+JOIN top10 t
+    ON a.country_name = t.country_name
+WHERE a.subregion1_name IS NOT NULL
+GROUP BY
+    a.location_key,
+    a.country_code,
+    a.country_name,
+    a.subregion1_name,
+    a.subregion2_name;
+
+
