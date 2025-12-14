@@ -15,23 +15,18 @@ CREATE EXTERNAL TABLE IF NOT EXISTS covid19_top10_countries (
     country_name STRING,
     subregion1_name STRING,
     subregion2_name STRING,
-
     cumulative_confirmed INT,
     cumulative_deceased INT,
     cumulative_recovered INT,
-
     cumulative_hospitalized_patients INT,
     cumulative_intensive_care_patients INT,
-
     cumulative_persons_fully_vaccinated INT,
-
     adult_male_mortality_rate DOUBLE,
     adult_female_mortality_rate DOUBLE,
     life_expectancy DOUBLE,
     diabetes_prevalence DOUBLE,
     health_expenditure_usd DOUBLE,
     out_of_pocket_health_expenditure_usd DOUBLE,
-
     population INT,
     population_male INT,
     population_female INT,
@@ -44,7 +39,6 @@ CREATE EXTERNAL TABLE IF NOT EXISTS covid19_top10_countries (
     population_age_60_69 INT,
     population_age_70_79 INT,
     population_age_80_and_older INT,
-
     latitude DOUBLE,
     longitude DOUBLE,
 

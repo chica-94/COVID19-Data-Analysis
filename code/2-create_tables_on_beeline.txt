@@ -126,7 +126,7 @@ SELECT * FROM covid19_geography LIMIT 10;
 DROP TABLE IF EXISTS covid19_gender;
 
 CREATE EXTERNAL TABLE IF NOT EXISTS covid19_gender(
-	`date1 DATE,
+	event_date DATE,
 	location_key STRING,
 	new_deceased_male INT,
 	cumulative_deceased_male INT,
@@ -135,8 +135,7 @@ CREATE EXTERNAL TABLE IF NOT EXISTS covid19_gender(
 	new_recovered_male INT,
 	cumulative_recovered_male INT,
     new_recovered_female INT,
-	cumulative_recovered_female INT
- )
+	cumulative_recovered_female INT)
 ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
 STORED AS TEXTFILE LOCATION '/tmp/group3_covid19/gender/'
 TBLPROPERTIES ("skip.header.line.count"="1");
@@ -151,15 +150,14 @@ SELECT * FROM covid19_gender LIMIT 10;
 DROP TABLE IF EXISTS covid19_epidemiology;
 
 CREATE EXTERNAL TABLE IF NOT EXISTS covid19_epidemiology(
-	`date1 DATE,
+	event_date DATE,
 	location_key STRING,
 	new_confirmed INT,
     cumulative_confirmed INT,
     new_deceased INT,
     cumulative_deceased INT,
 	new_recovered INT,
-	cumulative_recovered INT
- )
+	cumulative_recovered INT)
 ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
 STORED AS TEXTFILE LOCATION '/tmp/group3_covid19/epidemiology/'
 TBLPROPERTIES ("skip.header.line.count"="1");
@@ -193,8 +191,7 @@ CREATE EXTERNAL TABLE IF NOT EXISTS covid19_age(
     cumulative_recovered_age_60-69 INT,
     cumulative_recovered_age_70-79 INT,
     cumulative_recovered_age_80-89 INT,
-    cumulative_recovered_age_90-99 INT
- )
+    cumulative_recovered_age_90-99 INT)
 ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
 STORED AS TEXTFILE LOCATION '/tmp/group3_covid19/age/'
 TBLPROPERTIES ("skip.header.line.count"="1");
